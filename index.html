@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#103b46" />
+  <title>西澳 · 海岸线自驾</title>
+  <style>
+    :root {
+      --ink: #102d35;
+      --muted: #6b7d80;
+      --line: #dce7e5;
+      --paper: #f4f6f2;
+      --card: #fbfcf9;
+      --deep: #103b46;
+      --deep-2: #1e5660;
+      --coral: #e56d4e;
+      --sun: #f1b85b;
+      --mint: #c9ded4;
+      --sky: #d8ebe7;
+      --radius: 18px;
+      --shadow: 0 16px 45px rgba(16, 45, 53, .08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.55;
+    }
+    button, a { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+
+    .shell { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+    .topbar {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(244, 246, 242, .88);
+      border-bottom: 1px solid rgba(220, 231, 229, .9);
+      backdrop-filter: blur(16px);
+    }
+    .topbar-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: -.03em; }
+    .brand-mark { width: 34px; height: 34px; border-radius: 12px; background: var(--deep); color: #f5c878; display: grid; place-items: center; font-size: 17px; transform: rotate(-8deg); }
+    .brand small { display: block; color: var(--muted); font-size: 10px; letter-spacing: .12em; font-weight: 700; margin-top: -3px; }
+    .nav { display: flex; gap: 22px; color: var(--muted); font-size: 13px; }
+    .nav a:hover { color: var(--coral); }
+    .top-action { border: 1px solid var(--deep); background: var(--deep); color: white; padding: 9px 16px; border-radius: 999px; font-size: 13px; transition: transform .2s, background .2s; }
+    .top-action:hover { background: var(--deep-2); transform: translateY(-1px); }
+
+    .hero { padding: 64px 0 54px; overflow: hidden; }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 760px); gap: 56px; align-items: center; }
+    .kicker { display: inline-flex; align-items: center; gap: 8px; color: var(--coral); font-size: 11px; letter-spacing: .14em; font-weight: 800; text-transform: uppercase; }
+    .kicker::before { content: ""; width: 24px; height: 2px; background: var(--coral); }
+    h1 { margin: 16px 0 18px; font-size: clamp(42px, 6vw, 76px); line-height: .98; letter-spacing: -.075em; max-width: 650px; }
+    h1 em { font-style: normal; color: var(--coral); }
+    .hero-copy { max-width: 580px; color: var(--muted); font-size: 17px; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 26px; }
+    .chip { padding: 8px 12px; border-radius: 999px; background: white; border: 1px solid var(--line); font-size: 12px; color: var(--deep); }
+    .chip strong { color: var(--coral); }
+    .section { padding: 56px 0; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
+    h2 { margin: 0; font-size: clamp(28px, 4vw, 44px); line-height: 1; letter-spacing: -.06em; }
+    .section-note { max-width: 420px; color: var(--muted); font-size: 13px; }
+
+    .stay-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .stay-card { min-height: 142px; padding: 17px; border: 1px solid var(--line); border-radius: 16px; background: white; display: flex; flex-direction: column; justify-content: space-between; }
+    .stay-card .date { font-size: 11px; color: var(--coral); font-weight: 800; }
+    .stay-card h3 { font-size: 18px; margin: 4px 0 0; letter-spacing: -.04em; }
+    .stay-card p { margin: 0; color: var(--muted); font-size: 12px; }
+    .stay-card.highlight { background: var(--mint); border-color: var(--mint); }
+
+    .day-nav { display: flex; gap: 8px; overflow-x: auto; padding: 3px 0 12px; scrollbar-width: thin; }
+    .day-nav button { flex: 0 0 auto; border: 1px solid var(--line); background: white; border-radius: 999px; padding: 10px 15px; color: var(--muted); transition: .2s; }
+    .day-nav button:hover { border-color: var(--coral); color: var(--coral); }
+    .day-nav button.active { background: var(--deep); color: white; border-color: var(--deep); }
+    .day-panel { display: none; grid-template-columns: minmax(0, .92fr) minmax(340px, 1.08fr); gap: 20px; animation: rise .28s ease both; }
+    .day-panel.active { display: grid; }
+    @keyframes rise { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+    .day-intro { padding: 28px; border-radius: var(--radius); background: var(--deep); color: white; min-height: 400px; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; position: relative; }
+    .day-intro::after { content: ""; position: absolute; width: 240px; height: 240px; right: -95px; top: -70px; border: 1px solid rgba(255,255,255,.22); border-radius: 50%; box-shadow: 0 0 0 26px rgba(255,255,255,.08), 0 0 0 54px rgba(255,255,255,.05); }
+    .day-intro .date-big { color: #f5c878; font-size: 12px; letter-spacing: .1em; font-weight: 800; text-transform: uppercase; }
+    .day-intro h3 { margin: 13px 0 10px; font-size: 38px; line-height: 1.02; letter-spacing: -.06em; max-width: 380px; position: relative; z-index: 1; }
+    .day-intro p { color: #c5d9d6; font-size: 14px; max-width: 390px; }
+    .day-footer { display: flex; gap: 8px; flex-wrap: wrap; position: relative; z-index: 1; }
+    .day-footer span { padding: 6px 9px; background: rgba(255,255,255,.12); border-radius: 999px; font-size: 11px; color: #e5f1ed; }
+    .timeline { background: white; border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 24px; }
+    .timeline-row { display: grid; grid-template-columns: 58px 18px 1fr; gap: 10px; min-height: 74px; }
+    .timeline-row:last-child { min-height: 0; }
+    .time { color: var(--coral); font-size: 12px; font-weight: 800; padding-top: 2px; }
+    .rail { position: relative; }
+    .rail::before { content: ""; position: absolute; top: 5px; left: 7px; width: 5px; height: 5px; background: var(--coral); border-radius: 50%; box-shadow: 0 0 0 4px #fff0eb; }
+    .rail::after { content: ""; position: absolute; left: 9px; top: 16px; bottom: -4px; width: 1px; background: var(--line); }
+    .timeline-row:last-child .rail::after { display: none; }
+    .event h4 { margin: 0; font-size: 15px; letter-spacing: -.02em; }
+    .event p { margin: 4px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .event .tag { display: inline-block; margin-top: 6px; padding: 3px 7px; border-radius: 5px; background: #edf5f2; color: var(--deep-2); font-size: 10px; }
+    .event .source-link { display: inline-block; margin-top: 7px; color: var(--deep-2); font-size: 11px; text-decoration: underline; text-decoration-color: #a9c7bf; text-underline-offset: 3px; }
+    .event .source-link:hover { color: var(--coral); }
+    .event .detail { display: block; margin-top: 6px; color: #839391; font-size: 11px; line-height: 1.45; }
+
+    .book-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .book-card { padding: 24px; border: 1px solid var(--line); border-radius: var(--radius); background: white; }
+    .book-card h3 { margin: 0 0 16px; font-size: 20px; letter-spacing: -.04em; }
+    .check-row { display: flex; gap: 11px; align-items: start; padding: 11px 0; border-top: 1px solid #edf1ef; font-size: 13px; }
+    .check-row input { appearance: none; width: 18px; height: 18px; flex: 0 0 auto; margin: 1px 0 0; border: 1px solid #b7c9c4; border-radius: 5px; background: white; }
+    .check-row input:checked { background: var(--coral); border-color: var(--coral); box-shadow: inset 0 0 0 4px white; }
+    .check-row small { display: block; color: var(--muted); margin-top: 2px; font-size: 11px; }
+    .note { margin-top: 18px; padding: 14px 16px; background: #fff3e5; border-left: 3px solid var(--sun); border-radius: 9px; color: #79592d; font-size: 12px; }
+    .footer { padding: 34px 0 54px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; display: flex; justify-content: space-between; gap: 20px; }
+
+    @media (max-width: 900px) {
+      .hero-grid, .day-panel { grid-template-columns: 1fr; }
+      .day-intro { min-height: 290px; }
+      .stay-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .shell { width: min(100% - 28px, 1180px); }
+      .topbar-inner { height: 62px; }
+      .nav { display: none; }
+      .top-action { padding: 8px 12px; }
+      .hero { padding: 40px 0 36px; }
+      h1 { font-size: 50px; }
+      .hero-copy { font-size: 15px; }
+      .section { padding: 40px 0; }
+      .section-head { display: block; }
+      .section-note { margin-top: 12px; }
+      .stay-grid, .book-grid { grid-template-columns: 1fr; }
+      .stay-card { min-height: 118px; }
+      .day-intro { padding: 22px; }
+      .day-intro h3 { font-size: 32px; }
+      .timeline { padding: 19px 15px; }
+      .timeline-row { grid-template-columns: 47px 18px 1fr; }
+      .footer { display: block; }
+      .footer span { display: block; margin-top: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="#top" aria-label="回到顶部">
+        <span class="brand-mark">↗</span>
+        <span>WA / COASTLINE<small>WESTERN AUSTRALIA · 2026</small></span>
+      </a>
+      <nav class="nav" aria-label="页面导航">
+        <a href="#days">每日行程</a>
+        <a href="#stays">住宿区域</a>
+        <a href="#book">预订清单</a>
+      </nav>
+      <a class="top-action" href="#days">查看行程 →</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="shell hero-grid">
+        <div>
+          <div class="kicker">7 days / 2 drivers / 1 long coastline</div>
+          <h1>把西澳的风，<br /><em>开进每一天。</em></h1>
+          <p class="hero-copy">一条从珀斯出发的海岸线自驾：先慢下来，再一路向北，把短尾矮袋鼠、粉红湖、海狮与卡尔巴里留给这趟旅程。</p>
+          <div class="hero-meta">
+            <span class="chip"><strong>09.26</strong> 抵达 Perth 05:50</span>
+            <span class="chip"><strong>10.02</strong> 离开 Perth 20:30</span>
+            <span class="chip">已出票 · 2 位驾驶者</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="days">
+      <div class="shell">
+        <div class="section-head">
+          <h2>每天怎么走？</h2>
+          <p class="section-note">点击日期切换。时间是行程级估算，实际以当天路况、天气和活动确认时间为准。</p>
+        </div>
+        <div class="day-nav" role="tablist" aria-label="每日行程">
+          <button class="active" role="tab" aria-selected="true" data-day="d26">09/26 · 抵达</button>
+          <button role="tab" aria-selected="false" data-day="d27">09/27 · 岛上</button>
+          <button role="tab" aria-selected="false" data-day="d28">09/28 · 沙丘</button>
+          <button role="tab" aria-selected="false" data-day="d29">09/29 · 海狮</button>
+          <button role="tab" aria-selected="false" data-day="d30">09/30 · 卡尔巴里</button>
+          <button role="tab" aria-selected="false" data-day="o1">10/01 · 粉红湖</button>
+          <button role="tab" aria-selected="false" data-day="o2">10/02 · 返程</button>
+        </div>
+
+        <article class="day-panel active" id="d26" role="tabpanel">
+          <div class="day-intro"><div><div class="date-big">Saturday · 26 September</div><h3>先睡一觉，<br />让旅程从珀斯开始。</h3><p>红眼航班后的第一天强制留出恢复时间。今天不取车，把体力留给接下来的北线。</p></div><div class="day-footer"><span>宿 · Perth CBD</span><span>落地日</span><span>不驾驶</span></div></div>
+          <div class="timeline">
+            <div class="timeline-row"><div class="time">06:00</div><div class="rail"></div><div class="event"><h4>飞机抵达珀斯</h4><p>航班截图显示 PER 05:50；页面按 06:00 作为行程预留时间。</p><span class="tag">航班 JQ076 · BKK → PER · T1</span></div></div>
+            <div class="timeline-row"><div class="time">07:30</div><div class="rail"></div><div class="event"><h4>完成入境、取行李、进城</h4><p>预计 07:30—08:30 从机场前往 Perth CBD。</p></div></div>
+            <div class="timeline-row"><div class="time">09:00</div><div class="rail"></div><div class="event"><h4>抵达酒店 / 强制休息</h4><p>你们有酒店会员，优先使用会员权益申请提前入住；抵达后以酒店最终安排为准。</p><span class="tag">住宿：Perth CBD · 会员权益优先确认入住</span></div></div>
+            <div class="timeline-row"><div class="time">09:00<br />—14:00</div><div class="rail"></div><div class="event"><h4>睡觉、洗澡、恢复体力</h4><p>这段时间不安排景点、不取车。</p></div></div>
+            <div class="timeline-row"><div class="time">14:30</div><div class="rail"></div><div class="event"><h4>附近午餐或咖啡 · Elizabeth Quay</h4><p>简单逛一圈，把当天活动控制在轻松范围。</p></div></div>
+            <div class="timeline-row"><div class="time">16:00</div><div class="rail"></div><div class="event"><h4>Kings Park and Botanic Garden</h4><p>先走 State War Memorial 一带，再看珀斯市中心和天鹅河全景。</p></div></div>
+            <div class="timeline-row"><div class="time">19:00</div><div class="rail"></div><div class="event"><h4>Northbridge 晚餐 · 尽早休息</h4><p>红眼航班后直接开始北线会制造疲劳驾驶风险。</p></div></div>
+          </div>
+        </article>
+
+        <article class="day-panel" id="d27" role="tabpanel">
+          <div class="day-intro"><div><div class="date-big">Sunday · 27 September</div><h3>上岛找 quokka，<br />把海风骑成一圈。</h3><p>从 Fremantle 换取更长的岛上时间。优先提前预订电助力自行车，完整环岛约 22 km 且有起伏和迎风路段。</p></div><div class="day-footer"><span>宿 · Perth CBD</span><span>Rottnest Island</span><span>电动自行车</span></div></div>
+          <div class="timeline">
+            <div class="timeline-row"><div class="time">07:50</div><div class="rail"></div><div class="event"><h4>Perth CBD → Fremantle</h4><p>前往 SeaLink 的 O’Connor Landing, Victoria Quay。</p></div></div>
+            <div class="timeline-row"><div class="time">08:20</div><div class="rail"></div><div class="event"><h4>办理登船</h4><p>不要把 SeaLink 码头和 Rottnest Express 的 B Shed 混为一处。</p><span class="tag">需提前核对码头定位</span></div></div>
+            <div class="timeline-row"><div class="time">09:00</div><div class="rail"></div><div class="event"><h4>Fremantle → Rottnest Island</h4><p>09:00—09:30 轮渡前往罗特尼斯岛。</p><a class="source-link" href="https://www.sealink.com.au/rottnest-island/ferry-information/ferry-timetable/" target="_blank" rel="noreferrer">SeaLink 2026 正式时刻表 ↗</a></div></div>
+            <div class="timeline-row"><div class="time">09:40</div><div class="rail"></div><div class="event"><h4>取自行车 / 电助力自行车</h4><p>建议提前预订，避免到岛后等待。</p></div></div>
+            <div class="timeline-row"><div class="time">10:00</div><div class="rail"></div><div class="event"><h4>环岛骑行</h4><p>完整线：Thomson Bay → Henrietta Rocks → Parker Point → Little Salmon Bay → Wadjemup Lighthouse → West End / Cape Vlamingh → Cathedral Rocks → Geordie Bay → 盐湖区 → Thomson Bay。</p><span class="detail">官方完整环岛线约 22 km、3—5 小时；若更想慢慢拍照，可改走约 10 km 的 Beaches, Lighthouses and Lakes 路线。</span><a class="source-link" href="https://www.rottnestisland.com/visit/guides-tips/cycle-your-way-around-the-island" target="_blank" rel="noreferrer">罗特尼斯岛官方骑行路线 ↗</a></div></div>
+            <div class="timeline-row"><div class="time">14:00</div><div class="rail"></div><div class="event"><h4>Thomson Bay Settlement 午餐</h4><p>回到聚落补水、吃饭。</p></div></div>
+            <div class="timeline-row"><div class="time">15:00</div><div class="rail"></div><div class="event"><h4>寻找短尾矮袋鼠 quokka</h4><p>The Settlement、The Basin、Bathurst Lighthouse、Pinky Beach 一带优先。它们偏夜行，清晨和傍晚更活跃，但不只集中在 camping 区。</p><a class="source-link" href="https://www.rottnestisland.com/see-do/wildlife-nature/quokkas" target="_blank" rel="noreferrer">官方短尾矮袋鼠观察指南 ↗</a></div></div>
+            <div class="timeline-row"><div class="time">17:00</div><div class="rail"></div><div class="event"><h4>还车 · 17:30—18:00 返 Fremantle</h4><p>可在 Fremantle 吃晚饭，再返回 Perth CBD。</p><span class="tag">不喂食、不喂水、不触摸</span></div></div>
+          </div>
+        </article>
+
+        <article class="day-panel" id="d28" role="tabpanel">
+          <div class="day-intro"><div><div class="date-big">Monday · 28 September</div><h3>从白沙丘，<br />开到石阵日落。</h3><p>公共假日 + 学校假期。普通两驱轿车或 SUV 足够，重点是提前确认租车、餐厅、导览和住宿。</p></div><div class="day-footer"><span>宿 · Cervantes</span><span>约 230—250 km</span><span>日落约 18:19</span></div></div>
+          <div class="timeline">
+            <div class="timeline-row"><div class="time">07:30</div><div class="rail"></div><div class="event"><h4>Perth 取车出发</h4><p>两位驾驶者轮换；出发前确认保险、机场还车、异地费与营业时间。</p><span class="tag">公共假日 · 提前确认</span></div></div>
+            <div class="timeline-row"><div class="time">09:30</div><div class="rail"></div><div class="event"><h4>兰斯林沙丘 Lancelin Sand Dunes</h4><p>观景或滑沙。滑沙板在镇上或沙丘入口租；普通两驱车停在入口，不要开进沙地。</p></div></div>
+            <div class="timeline-row"><div class="time">10:45</div><div class="rail"></div><div class="event"><h4>前往 Cervantes</h4><p>约 75 分钟车程。</p></div></div>
+            <div class="timeline-row"><div class="time">12:00</div><div class="rail"></div><div class="event"><h4>Lobster Shack 午餐</h4><p>餐厅厨房 11:00—15:00、商店 09:00—17:00，目前每周营业七天；公共假日务必提前电话确认。</p><span class="tag">可选 13:15—13:45 工厂导览</span><a class="source-link" href="https://www.lobstershack.com.au/factory-tours/" target="_blank" rel="noreferrer">Lobster Shack 工厂参观信息 ↗</a></div></div>
+            <div class="timeline-row"><div class="time">14:00</div><div class="rail"></div><div class="event"><h4>塞提斯湖 Lake Thetis</h4><p>走木栈道即可；完整环湖约 1.5 km。</p></div></div>
+            <div class="timeline-row"><div class="time">15:00</div><div class="rail"></div><div class="event"><h4>Pinnacles Desert Discovery Centre</h4><p>先了解公园，再进入尖峰石阵沙漠。</p></div></div>
+            <div class="timeline-row"><div class="time">16:00</div><div class="rail"></div><div class="event"><h4>尖峰石阵 4.5 km 自驾环线 + 步道</h4><p>等待金色时段与日落；9/28 Cervantes 日落约 18:19。</p><a class="source-link" href="https://exploreparks.dbca.wa.gov.au/park/nambung-national-park" target="_blank" rel="noreferrer">尖峰石阵官方公园资料 ↗</a></div></div>
+            <div class="timeline-row"><div class="time">18:30</div><div class="rail"></div><div class="event"><h4>返回塞万提斯镇入住</h4><p>不要求日落后再开四五十分钟去 Jurien Bay；郊区黄昏后袋鼠活动增加，少开一段更安全。</p><span class="tag">住宿：Cervantes</span></div></div>
+          </div>
+        </article>
+
+        <article class="day-panel" id="d29" role="tabpanel">
+          <div class="day-intro"><div><div class="date-big">Tuesday · 29 September</div><h3>和海狮下水，<br />再向卡尔巴里。</h3><p>海狮浮潜是当天的硬节点。结束后补给、加油，再北上 Kalbarri；不把粉红湖塞进傍晚。</p></div><div class="day-footer"><span>宿 · Kalbarri Town</span><span>约 350 km</span><span>海上活动</span></div></div>
+          <div class="timeline">
+            <div class="timeline-row"><div class="time">08:20</div><div class="rail"></div><div class="event"><h4>Cervantes 出发</h4><p>约 08:50 抵达 Jurien Bay，可先早餐或在海边走走。</p></div></div>
+            <div class="timeline-row"><div class="time">09:15</div><div class="rail"></div><div class="event"><h4>Jurien Bay Boat Harbour 报到</h4><p>提前确认活动集合点、装备和当天海况。</p></div></div>
+            <div class="timeline-row"><div class="time">09:30</div><div class="rail"></div><div class="event"><h4>澳大利亚海狮浮潜</h4><p>Turquoise Safaris 9/16 至次年 5/14 每天 07:00 和 09:30 两班；全程约 2 小时，水中互动最多 45 分钟，天气允许才出航。</p><span class="tag">野生动物 · 不能保证主动下水</span><a class="source-link" href="https://www.turquoisesafaris.com.au/sea-lion-tour" target="_blank" rel="noreferrer">Turquoise Safaris 官方班次 ↗</a></div></div>
+            <div class="timeline-row"><div class="time">11:30</div><div class="rail"></div><div class="event"><h4>冲洗、换衣、Jurien Bay 午餐</h4><p>另一家 Jurien Bay Oceanic Experience 约 2.5 小时，会提供全身湿衣、面镜、呼吸管和脚蹼，可一起比较。</p><a class="source-link" href="https://www.jurienbayoceanic.com.au/faqs" target="_blank" rel="noreferrer">Jurien Bay Oceanic 官方说明 ↗</a></div></div>
+            <div class="timeline-row"><div class="time">12:15</div><div class="rail"></div><div class="event"><h4>向北前往 Geraldton</h4><p>约 15:00 抵达。加油、咖啡、补充食物；时间充足可去 Geraldton Esplanade 远望 Seal Rock，但优先级较低。</p><a class="source-link" href="https://www.australiascoralcoast.com/destinations/geraldton-surrounds/geraldton" target="_blank" rel="noreferrer">Geraldton Seal Rock 说明 ↗</a></div></div>
+            <div class="timeline-row"><div class="time">15:30</div><div class="rail"></div><div class="event"><h4>Geraldton → Kalbarri</h4><p>约 17:30 入住。</p><span class="tag">住宿：Kalbarri</span></div></div>
+            <div class="timeline-row"><div class="time">17:50</div><div class="rail"></div><div class="event"><h4>Jakes Point 或 Red Bluff 日落</h4><p>9/29 卡尔巴里日落约 18:22；19:00 镇内晚餐。</p></div></div>
+          </div>
+        </article>
+
+        <article class="day-panel" id="d30" role="tabpanel">
+          <div class="day-intro"><div><div class="date-big">Wednesday · 30 September</div><h3>把卡尔巴里，<br />看成两种颜色。</h3><p>上午内陆峡谷，下午从最南端向北走海岸悬崖，完全没有折返；Pot Alley 是今天的必去落点。</p></div><div class="day-footer"><span>宿 · Kalbarri Town</span><span>约 120—150 km</span><span>Pot Alley</span></div></div>
+          <div class="timeline">
+            <div class="timeline-row"><div class="time">06:15</div><div class="rail"></div><div class="event"><h4>从 Kalbarri 出发</h4><p>带足饮水；园内没有饮用水，手机信号也可能不稳定。</p></div></div>
+            <div class="timeline-row"><div class="time">07:00</div><div class="rail"></div><div class="event"><h4>Nature’s Window 自然之窗</h4><p>约 800 m 往返，预留 30—45 分钟。</p></div></div>
+            <div class="timeline-row"><div class="time">07:50</div><div class="rail"></div><div class="event"><h4>Kalbarri Skywalk / Kaju Yatka</h4><p>看峡谷全景，避开后续升温。</p></div></div>
+            <div class="timeline-row"><div class="time">09:10</div><div class="rail"></div><div class="event"><h4>Z Bend Lookout</h4><p>1.2 km 往返，约 1 小时；不挑战 9 km The Loop 完整徒步。</p></div></div>
+            <div class="timeline-row"><div class="time">10:45</div><div class="rail"></div><div class="event"><h4>回 Kalbarri 镇 · 午餐和休息</h4><p>11:00—13:00 把中午留给恢复体力。</p></div></div>
+            <div class="timeline-row"><div class="time">14:00</div><div class="rail"></div><div class="event"><h4>Natural Bridge → Island Rock</h4><p>海岸线由南向北，两个点之间有木栈道。</p></div></div>
+            <div class="timeline-row"><div class="time">15:00</div><div class="rail"></div><div class="event"><h4>Grandstand / Shellhouse → Eagle Gorge</h4><p>Grandstand、Shellhouse 根据体力选停；15:30—16:00 到 Eagle Gorge。</p></div></div>
+            <div class="timeline-row"><div class="time">16:10</div><div class="rail"></div><div class="event"><h4>Pot Alley</h4><p>停车场到海滩约 400 m 往返；官方建议约 20 分钟，拍照看海留 45—50 分钟。</p><span class="tag">必去 · 不越过护栏 / 不靠近浪线</span></div></div>
+            <div class="timeline-row"><div class="time">17:10</div><div class="rail"></div><div class="event"><h4>Rainbow Valley / Mushroom Rock</h4><p>只看观景点；完整 3 km 环线需另留约 1 小时。</p></div></div>
+            <div class="timeline-row"><div class="time">17:40</div><div class="rail"></div><div class="event"><h4>Red Bluff 看日落</h4><p>官方南北顺序：Natural Bridge → Island Rock → Grandstand → Shellhouse → Eagle Gorge → Pot Alley → Rainbow Valley → Mushroom Rock → Red Bluff。</p><a class="source-link" href="https://trailswa.com.au/storage/media/1ln47pk24wok/kalbarri-national-park-visitor-guide.pdf" target="_blank" rel="noreferrer">卡尔巴里国家公园官方游客手册 ↗</a></div></div>
+          </div>
+        </article>
+
+        <article class="day-panel" id="o1" role="tabpanel">
+          <div class="day-intro"><div><div class="date-big">Thursday · 01 October</div><h3>追着粉色，<br />把车开回珀斯。</h3><p>上午看鹈鹕和 Hutt Lagoon，再一路回到 Perth CBD；这是全程最长驾驶日，至少安排一次中途休息。</p></div><div class="day-footer"><span>宿 · Perth CBD</span><span>约 570—590 km</span><span>纯驾驶约 6 h</span></div></div>
+          <div class="timeline">
+            <div class="timeline-row"><div class="time">07:45</div><div class="rail"></div><div class="event"><h4>早餐、退房</h4><p>确认车上饮水、零食、油量。</p></div></div>
+            <div class="timeline-row"><div class="time">08:45</div><div class="rail"></div><div class="event"><h4>Kalbarri Pelican Feeding Point</h4><p>每天 08:45 举行，但鹈鹕和志愿者都可能临时不出现，属于顺路项目。</p><a class="source-link" href="https://www.australiascoralcoast.com/products/pelican-feeding" target="_blank" rel="noreferrer">官方鹈鹕喂食说明 ↗</a></div></div>
+            <div class="timeline-row"><div class="time">09:20</div><div class="rail"></div><div class="event"><h4>前往 Hutt Lagoon</h4><p>约 10:05 抵达 Port Gregory。</p></div></div>
+            <div class="timeline-row"><div class="time">10:05</div><div class="rail"></div><div class="event"><h4>Pink Lake Lookout · Hutt Lagoon</h4><p>10:00—11:00 观看。颜色会随云量、季节、降雨和时段在红、粉、紫之间变化；Pink Lake Lookout 停车区为非铺装路面，普通两驱车可以进入，不要下湖游泳。</p><span class="tag">不无限等待阴天变粉</span><a class="source-link" href="https://www.australiascoralcoast.com/destinations/kalbarri-surrounds/pink-lake" target="_blank" rel="noreferrer">赫特潟湖官方旅行资料 ↗</a></div></div>
+            <div class="timeline-row"><div class="time">11:00</div><div class="rail"></div><div class="event"><h4>前往 Geraldton</h4><p>约 12:15 抵达，午餐和加油。</p></div></div>
+            <div class="timeline-row"><div class="time">13:20</div><div class="rail"></div><div class="event"><h4>Greenough Leaning Trees</h4><p>停留约 15 分钟；官方观景停车位在 Brand Highway、Geraldton 以南约 20 分钟处。</p><a class="source-link" href="https://www.westernaustralia.com/en/attraction/greenough-leaning-trees/56b267232cbcbe7073ae1018" target="_blank" rel="noreferrer">Greenough Leaning Trees 资料 ↗</a></div></div>
+            <div class="timeline-row"><div class="time">13:40</div><div class="rail"></div><div class="event"><h4>返回 Perth CBD</h4><p>约 17:45—18:00 抵达，中途至少休息一次。</p><span class="tag">住宿：Perth CBD · 航班前一晚缓冲</span></div></div>
+          </div>
+        </article>
+
+        <article class="day-panel" id="o2" role="tabpanel">
+          <div class="day-intro"><div><div class="date-big">Friday · 02 October</div><h3>最后半天，<br />把节奏放慢。</h3><p>20:30 从 Perth T1 起飞前往巴厘岛；返程页以国际航班标准安排，17:30—18:00 进入航站楼。</p></div><div class="day-footer"><span>无住宿</span><span>20:30 起飞</span><span>Perth T1</span></div></div>
+          <div class="timeline">
+            <div class="timeline-row"><div class="time">09:30</div><div class="rail"></div><div class="event"><h4>AGWA 或 WA Museum Boola Bardip</h4><p>二选一：西澳大利亚美术馆，或者西澳博物馆。</p></div></div>
+            <div class="timeline-row"><div class="time">11:45</div><div class="rail"></div><div class="event"><h4>Northbridge 午餐</h4><p>不安排太远的移动。</p></div></div>
+            <div class="timeline-row"><div class="time">13:15</div><div class="rail"></div><div class="event"><h4>Elizabeth Quay / London Court / 市中心采购</h4><p>最后一段城市散步。</p></div></div>
+            <div class="timeline-row"><div class="time">15:00</div><div class="rail"></div><div class="event"><h4>回酒店取行李、休息</h4><p>提前整理随身物品，留出机场路上的缓冲。</p></div></div>
+            <div class="timeline-row"><div class="time">16:30</div><div class="rail"></div><div class="event"><h4>离开市区 → 机场还车</h4><p>17:00 左右加满油、完成还车；如果是国际航班，按最迟 18:00 到机场准备。</p><span class="tag">航班 JQ106 · PER → DPS · T1</span></div></div>
+            <div class="timeline-row"><div class="time">20:30</div><div class="rail"></div><div class="event"><h4>起飞前往巴厘岛</h4><p>10/03 00:10 抵达 DPS。</p></div></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="stays">
+      <div class="shell">
+        <div class="section-head">
+          <h2>每天住在哪里？</h2>
+          <p class="section-note">建议用“区域”来锁定住宿，先保证路线舒服、第二天出发顺，再挑酒店。</p>
+        </div>
+        <div class="stay-grid">
+          <div class="stay-card highlight"><div><div class="date">09.26 · 09.27</div><h3>Perth CBD</h3></div><p>使用酒店会员权益申请 9/26 上午提前入住，不额外预订 9/25 晚。</p></div>
+          <div class="stay-card"><div><div class="date">09.28</div><h3>Cervantes</h3></div><p>尖峰石阵日落后就近入住，避免夜间长驾。</p></div>
+          <div class="stay-card"><div><div class="date">09.29 · 09.30</div><h3>Kalbarri Town</h3></div><p>海狮浮潜后抵达；连续两晚覆盖国家公园内陆与海岸。</p></div>
+          <div class="stay-card"><div><div class="date">10.01</div><h3>Perth CBD</h3></div><p>航班前一晚回城，给道路、天气和海上活动留缓冲。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="book">
+      <div class="shell">
+        <div class="section-head">
+          <h2>先锁定这些，旅程就稳了一半。</h2>
+          <p class="section-note">下面是根据当前路线的优先级清单；具体价格、余位和取消政策留到下一版核价。</p>
+        </div>
+        <div class="book-grid">
+          <div class="book-card"><h3>住宿与交通</h3><label class="check-row"><input type="checkbox" /><span>Perth CBD <small>9/26–9/27；用会员权益申请 9/26 上午提前入住</small></span></label><label class="check-row"><input type="checkbox" /><span>Cervantes 住宿 <small>9/28，尖峰石阵日落后就近休息</small></span></label><label class="check-row"><input type="checkbox" /><span>Kalbarri Town 住宿 <small>9/29–9/30，连续两晚</small></span></label><label class="check-row"><input type="checkbox" /><span>租车 <small>9/28–10/02，确认 T1 还车、保险、轮胎玻璃</small></span></label></div>
+          <div class="book-card"><h3>活动与门票</h3><label class="check-row"><input type="checkbox" /><span>Rottnest 往返船票 + 电动自行车 <small>9/27 · Fremantle 出发优先</small></span></label><label class="check-row"><input type="checkbox" /><span>Jurien Bay 海狮浮潜 <small>9/29 09:30 · 选可改期 / 退款条款</small></span></label><label class="check-row"><input type="checkbox" /><span>Lobster Shack 午餐 / 工厂导览 <small>9/28 · 公共假日，提前确认场次</small></span></label><label class="check-row"><input type="checkbox" /><span>WA Parks 5-Day Holiday Pass <small>覆盖 Nambung 与 Kalbarri，付款前复核价格规则</small></span></label></div>
+        </div>
+        <div class="note">路线提醒：海狮浮潜、船班、粉红湖颜色、鹈鹕与 quokka 都受自然条件影响。页面当前是路线原型，下一轮可以继续加入实时核价、酒店候选、地图链接或预算。</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell footer"><span>WA / COASTLINE · itinerary prototype 01</span><span>当前基线：2026.09.26 — 2026.10.02 · Monkey Mia 暂不纳入</span></footer>
+
+  <script>
+    const tabs = document.querySelectorAll('.day-nav button');
+    const panels = document.querySelectorAll('.day-panel');
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        tabs.forEach((item) => { item.classList.remove('active'); item.setAttribute('aria-selected', 'false'); });
+        panels.forEach((panel) => panel.classList.remove('active'));
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        document.getElementById(tab.dataset.day).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
