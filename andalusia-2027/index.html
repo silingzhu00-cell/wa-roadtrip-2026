@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="2027年安达卢西亚伊斯兰建筑与历史主题行程">
   <title>安达卢西亚 · 诸王之路｜2027</title>
-  <link rel="stylesheet" href="styles-v2.css">
+  <link rel="stylesheet" href="styles-v3.css">
 </head>
 <body>
   <header class="site-header">
@@ -34,9 +34,13 @@
     <section id="itinerary" class="section-pad itinerary" aria-labelledby="itinerary-title">
       <div class="section-head"><span>02 / ITINERARY</span><h2 id="itinerary-title">按日期翻阅行程</h2></div>
       <div class="truth-note"><strong>气候说明</strong> 页面温度与降水来自 AEMET 1981—2010 常值，均为<strong>历史均值，不是天气预报</strong>。</div>
-      <div class="day-selector-head"><strong>点击日期，切换每天的行程</strong><span>红色表示当前正在查看</span></div>
-      <div id="day-tabs" class="day-tabs" role="tablist" aria-label="选择日期"></div>
+      <div class="day-selector-head"><strong>点击日期，切换每天的行程</strong><span>左右滑动查看更多日期 · 红色表示当前正在查看</span></div>
+      <div class="day-tabs-shell"><div id="day-tabs" class="day-tabs" role="tablist" aria-label="选择日期"></div><span class="day-tabs-cue" aria-hidden="true">→</span></div>
       <article id="day-panel" class="day-panel" aria-live="polite"></article>
+      <div class="day-bottom-nav" aria-label="在行程末尾切换日期">
+        <div class="day-selector-head"><strong>继续查看其他日期</strong><span>左右滑动查看更多日期</span></div>
+        <div class="day-tabs-shell"><div id="day-tabs-bottom" class="day-tabs" role="tablist" aria-label="在行程末尾选择日期"></div><span class="day-tabs-cue" aria-hidden="true">→</span></div>
+      </div>
     </section>
 
     <section id="bookings" class="section-pad planning" aria-labelledby="planning-title">
@@ -59,6 +63,6 @@
   </main>
   <footer><span>AL·ANDALUS / 2027</span><a href="#top">回到顶部 ↑</a></footer>
   <script src="data.js"></script>
-  <script src="app-v2.js"></script>
+  <script src="app-v3.js"></script>
 </body>
 </html>
