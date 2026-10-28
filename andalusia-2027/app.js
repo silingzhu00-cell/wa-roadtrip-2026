@@ -9,7 +9,7 @@ function renderCities() {
 
 function renderTabs() {
   $("#day-tabs").innerHTML = data.days.map((day, index) => `
-    <button class="day-tab" role="tab" id="tab-${day.id}" aria-controls="day-panel" aria-selected="${index === 0}" data-day="${index}">${day.date}<span>${day.city.split(" → ")[0]}</span></button>
+    <button class="day-tab" role="tab" id="tab-${day.id}" aria-controls="day-panel" aria-selected="${index === 0}" data-day="${index}" title="查看 ${day.date} 行程">${day.date}<span>${day.city.split(" → ")[0]}</span><small>点击查看</small></button>
   `).join("");
   document.querySelectorAll(".day-tab").forEach(button => button.addEventListener("click", () => selectDay(Number(button.dataset.day))));
 }
